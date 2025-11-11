@@ -8,6 +8,9 @@ import freeLancerRoutes from "./routes/freeLancerRoutes.js";
 import pricingRoutes from "./routes/pricingRoutes.js";
 import projectshowRoutes from "./routes/projectshowRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import freelancerBrowseRoutes from "./routes/freelancerBrowseRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,11 +31,14 @@ app.use("/api", freeLancerRoutes);
 app.use("/api", pricingRoutes);
 app.use("/api", projectshowRoutes);
 app.use("/api", bookingRoutes);
+app.use("/api", notificationRoutes);
+app.use("/api", freelancerBrowseRoutes);
+app.use("/api", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is up and running");
 });
 
-app.listen(PORT, "localhost", () => {
-  console.log(`Server is running on localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });

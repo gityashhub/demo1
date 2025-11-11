@@ -8,7 +8,8 @@ import {
   startWork,
   submitWork,
   approveWork,
-  markPaid
+  markPaid,
+  cancelBooking
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.patch("/bookings/:id/start", authMiddleware, startWork);
 router.patch("/bookings/:id/submit", authMiddleware, submitWork);
 router.patch("/bookings/:id/approve", authMiddleware, approveWork);
 router.patch("/bookings/:id/mark-paid", authMiddleware, markPaid);
+router.patch("/bookings/:id/cancel", authMiddleware, cancelBooking);
 
 export default router;

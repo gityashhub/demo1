@@ -1,6 +1,7 @@
 import Booking from "../models/Booking.js";
 import PricingPackage from "../models/PricingPackage.js";
-import router from "../routes/pricingRoutes.js";
+import { createNotification } from "./notificationController.js";
+import User from "../models/Users.js";
 
 export const createBooking = async (req, res) => {
   try {
@@ -15,6 +16,12 @@ export const createBooking = async (req, res) => {
       title: req.body.title,
       brief: req.body.brief
     });
+
+    await createNotification(
+      req.body.freelancerId,
+      "booking_requested",
+      `New booking request: ${req.body.title}`
+    );
 
     res.status(201).json(booking);
   } catch (err) {
@@ -48,7 +55,6 @@ export const getBookingById = async (req, res) => {
 
     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
-    // Access control: only involved users can view
     if (
       booking.clientId._id.toString() !== req.user._id.toString() &&
       booking.freelancerId._id.toString() !== req.user._id.toString()
@@ -75,6 +81,12 @@ export const acceptBooking = async (req, res) => {
     booking.status = "accepted";
     await booking.save();
 
+    await createNotification(
+      booking.clientId,
+      "booking_accepted",
+      `Your booking "${booking.title}" has been accepted`
+    );
+
     res.json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -92,6 +104,12 @@ export const startWork = async (req, res) => {
 
     booking.status = "in-progress";
     await booking.save();
+
+    await createNotification(
+      booking.clientId,
+      "work_started",
+      `Work has started on "${booking.title}"`
+    );
 
     res.json(booking);
   } catch (err) {
@@ -111,6 +129,12 @@ export const submitWork = async (req, res) => {
     booking.status = "submitted";
     await booking.save();
 
+    await createNotification(
+      booking.clientId,
+      "work_submitted",
+      `Work has been submitted for "${booking.title}". Please review.`
+    );
+
     res.json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -128,6 +152,12 @@ export const approveWork = async (req, res) => {
 
     booking.status = "completed";
     await booking.save();
+
+    await createNotification(
+      booking.freelancerId,
+      "work_approved",
+      `Your work on "${booking.title}" has been approved`
+    );
 
     res.json(booking);
   } catch (err) {
@@ -147,6 +177,12 @@ export const markPaid = async (req, res) => {
     booking.status = "paid";
     await booking.save();
 
+    await createNotification(
+      booking.freelancerId,
+      "payment_received",
+      `Payment received for "${booking.title}"`
+    );
+
     res.json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -160,7 +196,6 @@ export const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Only the client or the assigned freelancer can cancel
     const isClient = booking.clientId.toString() === req.user._id.toString();
     const isFreelancer = booking.freelancerId.toString() === req.user._id.toString();
 
@@ -168,7 +203,6 @@ export const cancelBooking = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to cancel this booking." });
     }
 
-    // Cancel only before freelancer accepts
     if (booking.status !== "requested") {
       return res.status(400).json({ message: "Cannot cancel after acceptance." });
     }
@@ -176,13 +210,16 @@ export const cancelBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
 
+    const notifyUserId = isClient ? booking.freelancerId : booking.clientId;
+    await createNotification(
+      notifyUserId,
+      "booking_cancelled",
+      `Booking "${booking.title}" has been cancelled`
+    );
+
     res.json({ message: "Booking cancelled successfully", booking });
 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
-
-export default router;
-
