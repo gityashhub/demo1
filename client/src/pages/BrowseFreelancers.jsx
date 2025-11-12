@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { freelancerAPI } from '../services/api';
-import Navbar from '../components/Navbar';
 import '../styles/Browse.css';
 
 const BrowseFreelancers = () => {
@@ -41,16 +40,14 @@ const BrowseFreelancers = () => {
 
   if (loading) {
     return (
-      <>
-        <Navbar />
-        <div className="browse-container"><p>Loading...</p></div>
-      </>
+      <div className="browse-container loading">
+        <div className="spinner"></div>
+        <p>Loading freelancers...</p>
+      </div>
     );
   }
 
   return (
-    <>
-    <Navbar />
     <div className="browse-container">
       <h1>Browse Freelancers</h1>
       
@@ -131,7 +128,6 @@ const BrowseFreelancers = () => {
         </div>
       )}
     </div>
-    </>
   );
 };
 

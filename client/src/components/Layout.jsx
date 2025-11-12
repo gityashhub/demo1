@@ -16,15 +16,15 @@ const Layout = ({ children }) => {
     <div className="layout">
       <nav className="navbar">
         <div className="nav-container">
-          <Link to="/" className="nav-brand">FreelanceHub</Link>
+          <Link to="/dashboard" className="nav-brand">FreelanceHub</Link>
           
           <div className="nav-links">
             {user && (
               <>
                 {user.role === 'client' && (
                   <>
+                    <Link to="/dashboard">Dashboard</Link>
                     <Link to="/browse">Browse Freelancers</Link>
-                    <Link to="/my-bookings">My Bookings</Link>
                   </>
                 )}
                 
@@ -32,7 +32,6 @@ const Layout = ({ children }) => {
                   <>
                     <Link to="/dashboard">Dashboard</Link>
                     <Link to="/my-profile">My Profile</Link>
-                    <Link to="/my-bookings">Bookings</Link>
                   </>
                 )}
                 
