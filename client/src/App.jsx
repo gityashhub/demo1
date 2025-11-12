@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ClientDashboard from './pages/ClientDashboard';
@@ -22,30 +23,29 @@ function AppRoutes() {
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        height: '100vh' 
+        height: '100vh',
+        background: 'var(--white)'
       }}>
-        <div style={{ fontSize: '20px', color: '#666' }}>Loading...</div>
+        <div style={{ 
+          fontSize: '20px', 
+          color: 'var(--primary-blue)',
+          fontWeight: '600'
+        }}>Loading...</div>
       </div>
     );
   }
 
   return (
     <Routes>
-      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
-      <Route path="/register" element={!user ? <Register /> : <Navigate to="/" replace />} />
+      <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" replace />} />
+      <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" replace />} />
       
-      <Route path="/" element={
+      <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/dashboard" replace />} />
+      
+      <Route path="/dashboard" element={
         <ProtectedRoute>
           <Layout>
             {user?.role === 'client' ? <ClientDashboard /> : <FreelancerDashboard />}
-          </Layout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/dashboard" element={
-        <ProtectedRoute requiredRole="freelancer">
-          <Layout>
-            <FreelancerDashboard />
           </Layout>
         </ProtectedRoute>
       } />
