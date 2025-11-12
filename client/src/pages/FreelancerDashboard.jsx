@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bookingAPI, pricingAPI, projectAPI, freelancerAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 
 const FreelancerDashboard = () => {
@@ -45,47 +44,42 @@ const FreelancerDashboard = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      requested: '#ff9800',
-      accepted: '#2196f3',
+      requested: 'var(--warning)',
+      accepted: 'var(--primary-blue)',
       'in-progress': '#9c27b0',
-      submitted: '#f44336',
-      completed: '#4caf50',
+      submitted: 'var(--error)',
+      completed: 'var(--success)',
       paid: '#00bcd4',
-      cancelled: '#757575'
+      cancelled: 'var(--gray-500)'
     };
-    return colors[status] || '#999';
+    return colors[status] || 'var(--gray-400)';
   };
 
   if (loading) {
     return (
-      <>
-        <Navbar />
-        <div className="dashboard-container"><p>Loading...</p></div>
-      </>
+      <div className="dashboard-container loading">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
     );
   }
 
   if (!profile) {
     return (
-      <>
-        <Navbar />
-        <div className="dashboard-container">
+      <div className="dashboard-container">
         <div className="empty-state">
           <h2>Complete Your Profile</h2>
           <p>Create your freelancer profile to start receiving bookings</p>
-          <button className="btn-primary" onClick={() => navigate('/my-profile')}>
+          <button className="btn btn-primary" onClick={() => navigate('/my-profile')}>
             Create Profile
           </button>
         </div>
       </div>
-      </>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="dashboard-container">
+    <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Freelancer Dashboard</h1>
         <button className="btn-primary" onClick={() => navigate('/my-profile')}>
@@ -143,7 +137,6 @@ const FreelancerDashboard = () => {
         )}
       </div>
     </div>
-    </>
   );
 };
 

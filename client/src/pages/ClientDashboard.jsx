@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bookingAPI } from '../services/api';
-import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 
 const ClientDashboard = () => {
@@ -26,25 +25,23 @@ const ClientDashboard = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      requested: '#ff9800',
-      accepted: '#2196f3',
+      requested: 'var(--warning)',
+      accepted: 'var(--primary-blue)',
       'in-progress': '#9c27b0',
-      submitted: '#f44336',
-      completed: '#4caf50',
+      submitted: 'var(--error)',
+      completed: 'var(--success)',
       paid: '#00bcd4',
-      cancelled: '#757575'
+      cancelled: 'var(--gray-500)'
     };
-    return colors[status] || '#999';
+    return colors[status] || 'var(--gray-400)';
   };
 
   if (loading) {
-    return <div className="dashboard-container"><p>Loading...</p></div>;
+    return <div className="dashboard-container loading"><div className="spinner"></div><p>Loading...</p></div>;
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="dashboard-container">
+    <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Client Dashboard</h1>
         <button className="btn-primary" onClick={() => navigate('/browse')}>
@@ -104,7 +101,6 @@ const ClientDashboard = () => {
         )}
       </div>
     </div>
-    </>
   );
 };
 
